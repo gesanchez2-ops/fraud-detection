@@ -8,7 +8,7 @@ from features import build_model_frame
 from risk_rules import label_risk, score_transaction
 
 
-DATA_DIR = Path(__file__).resolve().parents[1] / "data"
+DATA_DIR = Path(__file__).resolve().parent
 
 
 def load_inputs() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
@@ -35,6 +35,9 @@ def summarize_results(scored: pd.DataFrame, chargebacks: pd.DataFrame) -> pd.Dat
             total_amount_usd=("amount_usd", "sum"),
             avg_amount_usd=("amount_usd", "mean"),
         )
+        .assign(risk_label=lambda df: pd.Categorical(
+            df["risk_label"], categories=["low", "medium", "high"], ordered=True
+        ))
         .sort_values("risk_label")
     )
 
